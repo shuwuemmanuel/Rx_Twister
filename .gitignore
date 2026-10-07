@@ -1,0 +1,6 @@
+build*/
+out/
+test_out/
+*.glb.tmp
+.vs/
+.vscode/

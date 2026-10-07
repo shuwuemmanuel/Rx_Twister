@@ -1,0 +1,15 @@
+{
+  "name": "rx-twister",
+  "version": "1.0.0",
+  "description": "3D model converter and optimiser",
+  "dependencies": [
+    "assimp",
+    "draco",
+    "libwebp",
+    "meshoptimizer",
+    "nlohmann-json",
+    "stb",
+    "tbb",
+    "zlib"
+  ]
+}
