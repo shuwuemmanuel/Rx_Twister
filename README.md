@@ -131,7 +131,7 @@ cmake --build build --config Release
 
 **macOS (Homebrew)**
 ```bash
-brew install cmake ninja assimp webp meshoptimizer nlohmann-json tbb
+brew install cmake ninja assimp webp nlohmann-json tbb   # meshoptimizer + stb are downloaded by CMake
 cmake -S . -B build -G Ninja && cmake --build build
 ```
 

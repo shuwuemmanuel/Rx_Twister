@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Dependencies
-        run: brew install ninja assimp webp meshoptimizer nlohmann-json tbb
+        run: brew install ninja assimp webp nlohmann-json tbb  # meshoptimizer + stb come from FetchContent
       - name: Build
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
