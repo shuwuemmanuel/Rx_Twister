@@ -49,6 +49,12 @@ std::string percentDecode(const std::string& s);
 std::string percentEncodePath(const std::string& s);
 std::vector<uint8_t> base64Decode(std::string_view s);
 std::string base64Encode(const uint8_t* d, size_t n);
+// Locale independent number parsing / formatting. Uses <charconv> when the standard library has
+// floating point support (libc++ < 17, e.g. Xcode 15, does not) and strtod / snprintf otherwise.
+// parse*: returns the end of the number, or `p` when nothing could be parsed.
+const char* parseFloat(const char* p, const char* e, float& v);
+const char* parseDouble(const char* p, const char* e, double& v);
+char* formatFloat(char* p, float v);   // shortest-ish "%.7g", writes at most 32 chars
 // portable memmem
 const char* findBytes(const char* hay, size_t n, const char* needle, size_t m);
 

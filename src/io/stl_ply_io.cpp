@@ -72,8 +72,8 @@ bool readStl(const std::string& path, Scene& s, std::string& err) {
       float* c[3] = {&q.x, &q.y, &q.z};
       for (int k = 0; k < 3; ++k) {
         while (p < e && (*p == ' ' || *p == '\t')) ++p;
-        auto r = std::from_chars(p, e, *c[k]);
-        p = r.ptr;
+        const char* r = parseFloat(p, e, *c[k]);
+        p = r == p ? p + 1 : r;
       }
       m.positions.push_back(q);
     }
@@ -193,8 +193,8 @@ bool readPly(const std::string& path, Scene& s, std::string& err) {
   auto asciiNum = [&]() -> double {
     while (tp < reinterpret_cast<const char*>(end) && (*tp == ' ' || *tp == '\n' || *tp == '\r' || *tp == '\t')) ++tp;
     double v = 0;
-    auto r = std::from_chars(tp, reinterpret_cast<const char*>(end), v);
-    tp = r.ptr == tp ? tp + 1 : r.ptr;
+    const char* r = parseDouble(tp, reinterpret_cast<const char*>(end), v);
+    tp = r == tp ? tp + 1 : r;
     return v;
   };
   for (auto& el : elems) {

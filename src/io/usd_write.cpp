@@ -27,8 +27,7 @@ std::string primName(const std::string& n, const std::string& fallback, std::set
 inline void putF(std::string& o, float v) {
   char buf[32];
   if (std::fabs(v) < 1e-30f) v = 0;
-  auto r = std::to_chars(buf, buf + 32, v, std::chars_format::general, 7);
-  o.append(buf, r.ptr);
+  o.append(buf, formatFloat(buf, v));
 }
 
 template <class F>

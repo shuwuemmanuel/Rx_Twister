@@ -1,6 +1,8 @@
 #include "core/util.h"
 #include "core/par.h"
 #include <algorithm>
+#include <charconv>
+#include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #if defined(_WIN32)
@@ -147,6 +149,43 @@ std::string base64Encode(const uint8_t* d, size_t n) {
     r += i + 1 < n ? kB64[(v >> 6) & 63] : '='; r += i + 2 < n ? kB64[v & 63] : '=';
   }
   return r;
+}
+
+#if defined(__cpp_lib_to_chars) && __cpp_lib_to_chars >= 201611L && !defined(RX_FORCE_STRTOD)
+#define RX_FLOAT_CHARCONV 1
+#endif
+
+template <class T>
+static const char* parseReal(const char* p, const char* e, T& v) {
+#if defined(RX_FLOAT_CHARCONV)
+  auto r = std::from_chars(p, e, v);
+  return r.ec == std::errc() ? r.ptr : p;
+#else
+  char buf[64];
+  size_t n = 0;
+  while (p + n < e && n < sizeof buf - 1) {
+    char c = p[n];
+    if (!(std::isalnum((unsigned char)c) || c == '.' || c == '-' || c == '+')) break;
+    buf[n] = c;
+    ++n;
+  }
+  buf[n] = 0;
+  char* end = nullptr;
+  double d = std::strtod(buf, &end);
+  if (end == buf) return p;
+  v = T(d);
+  return p + (end - buf);
+#endif
+}
+const char* parseFloat(const char* p, const char* e, float& v) { return parseReal(p, e, v); }
+const char* parseDouble(const char* p, const char* e, double& v) { return parseReal(p, e, v); }
+char* formatFloat(char* p, float v) {
+#if defined(RX_FLOAT_CHARCONV)
+  return std::to_chars(p, p + 32, v, std::chars_format::general, 7).ptr;
+#else
+  int n = snprintf(p, 32, "%.7g", double(v));
+  return p + std::clamp(n, 0, 31);
+#endif
 }
 
 const char* findBytes(const char* hay, size_t n, const char* needle, size_t m) {

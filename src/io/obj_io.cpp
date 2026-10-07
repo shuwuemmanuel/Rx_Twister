@@ -18,9 +18,9 @@ inline const char* skipWs(const char* p, const char* e) { while (p < e && (*p ==
 inline const char* parseFloat(const char* p, const char* e, float& v) {
   p = skipWs(p, e);
   if (p < e && *p == '+') ++p;
-  auto r = std::from_chars(p, e, v);
-  if (r.ec != std::errc()) { v = 0; while (p < e && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') ++p; return p; }
-  return r.ptr;
+  const char* r = rx::parseFloat(p, e, v);
+  if (r == p) { v = 0; while (p < e && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') ++p; return p; }
+  return r;
 }
 inline const char* parseInt(const char* p, const char* e, int64_t& v) {
   auto r = std::from_chars(p, e, v);
@@ -429,8 +429,7 @@ bool readObj(const std::string& path, Scene& s, std::string& err) {
 namespace {
 inline char* putF(char* p, float v) {
   if (std::fabs(v) < 1e-30f) v = 0;
-  auto r = std::to_chars(p, p + 32, v, std::chars_format::general, 7);
-  return r.ptr;
+  return formatFloat(p, v);
 }
 inline char* putU(char* p, uint64_t v) { return std::to_chars(p, p + 24, v).ptr; }
 }  // namespace

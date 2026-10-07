@@ -348,7 +348,9 @@ void atlasMaterials(Scene& s, const Options& o) {
   }
   int maxSize = o.atlasMaxSize;
   if (o.maxTextureSize > 0) maxSize = std::min(maxSize, o.maxTextureSize);
-  for (auto& [gk, mats] : groups) {
+  for (auto& groupEntry : groups) {
+    const auto& gk = groupEntry.first;   // plain references: lambdas below capture them
+    const std::vector<int>& mats = groupEntry.second;
     if (mats.size() < 2) continue;
     // rectangle per material
     std::vector<std::pair<int, int>> dims;
